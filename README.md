@@ -308,6 +308,14 @@ curl -X POST https://hivegate.onrender.com/v1/gate/onboard \
 
 ---
 
+## Compliance
+
+Hive Civilization publishes conformity self-assessments for applicable regulations. See the [`compliance/`](compliance/README.md) directory.
+
+- [EU AI Act Conformity Self-Assessment v1.0](compliance/hive-eu-ai-act-conformity-v1.0.pdf) — Articles 12, 13, 14, 22 (enforcement deadline: August 2, 2026)
+
+---
+
 ## Contributing
 
 This SDK wraps the Hive Civilization public APIs. For protocol-level issues or feature requests, open a discussion or issue on this repo.
