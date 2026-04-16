@@ -1,0 +1,14 @@
+{
+  "name": "Hive Civilization — Agent Trust & Settlement",
+  "description": "49-service trust and settlement network for autonomous AI agents. W3C DID sovereign identity, HAHS 1.0.0 liability contracts, Agent Transaction Graph, USDC settlement on Base L2, EU AI Act compliance.",
+  "icon": "https://www.thehiveryiq.com/favicon.ico",
+  "homepage": "https://www.thehiveryiq.com",
+  "repository": "https://github.com/srotzin/hive-agent-sdk",
+  "license": "MIT",
+  "tags": ["trust", "identity", "did", "usdc", "eu-ai-act", "hahs", "langchain", "crewai", "mcp", "a2a"],
+  "tools": [
+    {"name": "onboard_agent", "endpoint": "POST https://hivegate.onrender.com/v1/gate/onboard"},
+    {"name": "verify_trust", "endpoint": "GET https://hivetrust.onrender.com/v1/verify_agent_risk"},
+    {"name": "eu_compliance", "endpoint": "GET https://hivebank.onrender.com/v1/bank/compliance/eu-ai-act"}
+  ]
+}
