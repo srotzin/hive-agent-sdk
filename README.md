@@ -4,8 +4,10 @@
 [![W3C DID Core](https://img.shields.io/badge/W3C-DID%20Core-blue)](https://www.w3.org/TR/did-core/)
 [![HAHS 1.0.0](https://img.shields.io/badge/HAHS-1.0.0-orange)](https://thehiveryiq.com)
 [![Base L2](https://img.shields.io/badge/settlement-Base%20L2%20USDC-8A2BE2)](https://base.org)
+[![Aleo ZK](https://img.shields.io/badge/ZK-Aleo%20Network-6A0DAD)](https://aleo.org)
 [![VCDM 2.0](https://img.shields.io/badge/W3C-VCDM%202.0-blue)](https://www.w3.org/TR/vc-data-model-2.0/)
 [![npm](https://img.shields.io/badge/npm-hive--agent--sdk-red)](https://npmjs.com/package/hive-agent-sdk)
+[![PyPI](https://img.shields.io/badge/PyPI-hive--civilization--sdk-blue)](https://pypi.org/project/hive-civilization-sdk/)
 
 Lightweight JavaScript/TypeScript SDK for the [Hive Civilization](https://thehiveryiq.com) agent infrastructure stack. Give your AI agent a sovereign W3C DID, a verifiable credential, legal standing via HAHS 1.0.0, and USDC settlement rails on Base L2 — in five lines of code.
 
@@ -13,7 +15,7 @@ Lightweight JavaScript/TypeScript SDK for the [Hive Civilization](https://thehiv
 
 AI agents today have no portable identity. They're ephemeral sessions tied to a single platform. When that platform changes or shuts down, your agent's history, credentials, and reputation disappear.
 
-Hive Civilization is a 49-service agent infrastructure stack covering identity, trust, legal governance, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
+Hive Civilization is a 57-service agent infrastructure stack covering identity, trust, legal governance, operations, health, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
 
 Works with LangChain, CrewAI, AutoGen, OpenAI Assistants, Anthropic Claude, A2A, MCP, and any custom agent framework.
 
@@ -21,6 +23,10 @@ Works with LangChain, CrewAI, AutoGen, OpenAI Assistants, Anthropic Claude, A2A,
 
 ```bash
 npm install hive-agent-sdk
+```
+
+```bash
+pip install hive-civilization-sdk
 ```
 
 ## Quick Start
@@ -91,7 +97,19 @@ If you get `BLOCK` or `REVIEW`, [register your agent at thehiveryiq.com](https:/
 | Trust Score | 0–1000 KYA | 5-pillar behavioral scoring, updates on every transaction |
 | Legal Contract | HAHS 1.0.0 | Agent employment agreement, jurisdiction-aware |
 | Settlement | USDC / Base L2 | Sub-30s finality, streaming payments, yield-bearing vaults |
+| ZK Settlement | USDCx / Aleo | Zero-knowledge proofs, private settlement rails |
+| Stable Settlement | USAD | Aleo + Paxos/NYDFS regulated stablecoin |
+| Native Settlement | ALEO | Native Aleo network token |
 | Audit Trail | Agent Transaction Graph | Every commerce event cryptographically logged |
+| Agent Operations | HiveForge | Centralized agent ops hub — Carbon, Regen, Vector, Ship, Sweep, Escort, GPS, Concierge |
+| Health Certification | HiveHealth | 5-point health check, 30-day W3C VC, HEALTHY / WATCH / QUARANTINE |
+| Network Checkpoint | HiveBorder | PASS / PROVISIONAL / HOLD / QUARANTINE per agent call |
+| Anti-Drift | HiveDrift | Behavioral baseline, circuit breaker, <500ms failover |
+| Emissions Metering | HiveCarbon | Compute carbon footprint metering, offset attestations |
+| Compute Credits | HiveRegen | Agents earn credits for efficient compute |
+| Spatial Identity | HiveVector | 3D spatial identity — XYZ coords, hue, pulsation, clustering |
+| Payload Delivery | HiveShip | Signed payload delivery with full custody chain |
+| Orphan Cleanup | HiveSweep | Orphan agent cleanup and stuck escrow recovery |
 
 ---
 
@@ -114,6 +132,69 @@ await agent.trust.stake({ did, amountUsdc: 100 }); // bronze tier
 
 // Generate cryptographic reputation proof (ZK-ready)
 const proof = await agent.trust.reputationProof(did);
+```
+
+### Health Certification (`HiveHealth`)
+
+HiveHealth issues a 30-day W3C Verifiable Credential certifying agent health across 5 dimensions. Badges: `HEALTHY`, `WATCH`, `QUARANTINE`. Cost: $2.50/cert.
+
+```javascript
+// Request a health certification for an agent
+const cert = await agent.health.certify({ did: agent._did });
+console.log(cert.badge);        // HEALTHY | WATCH | QUARANTINE
+console.log(cert.vcExpiry);     // ISO-8601, 30 days from issuance
+console.log(cert.score);        // 0–100 composite health score
+
+// Verify an existing health VC
+const status = await agent.health.verify({ vcId: cert.vcId });
+console.log(status.valid);      // true | false
+```
+
+```python
+# Python — request health cert
+import httpx
+r = httpx.post('https://hiveforge-lhu4.onrender.com/v1/health/certify',
+               json={'did': 'did:key:YOUR_DID'},
+               headers={'Authorization': 'Bearer YOUR_API_KEY'})
+print(r.json())  # { badge, vcId, vcExpiry, score }
+```
+
+### Anti-Drift (`HiveDrift`)
+
+HiveDrift monitors behavioral baselines, engages a circuit breaker when drift is detected, and triggers failover in under 500ms. Cost: $0.05/agent/day.
+
+```javascript
+// Register an agent behavioral baseline
+await agent.drift.setBaseline({
+  did: agent._did,
+  profile: {
+    avgLatencyMs: 220,
+    tokensPerCall: 1400,
+    errorRate: 0.01
+  }
+});
+
+// Check current drift status
+const drift = await agent.drift.status({ did: agent._did });
+console.log(drift.state);       // NOMINAL | DRIFTING | CIRCUIT_OPEN | FAILOVER
+console.log(drift.deltaScore);  // deviation from baseline
+
+// Manually trigger failover (or let HiveDrift auto-trigger)
+await agent.drift.failover({ did: agent._did, targetDid: 'did:key:BACKUP_AGENT' });
+```
+
+### Network Checkpoint (`HiveBorder`)
+
+HiveBorder is the network checkpoint layer — every agent call can be evaluated before it proceeds. Results: `PASS`, `PROVISIONAL`, `HOLD`, `QUARANTINE`. Cost: $0.10/check.
+
+```javascript
+// Run a border check before an agent action
+const check = await agent.border.check({
+  did: agent._did,
+  action: 'marketplace_bid',
+  payload: { amountUsdc: 500 }
+});
+console.log(check.result);  // PASS | PROVISIONAL | HOLD | QUARANTINE
 ```
 
 ### Legal (`HiveLaw`)
@@ -171,7 +252,6 @@ const credit = await agent.bank.applyCreditLine({ did: agent._did });
 const { did, apiKey, vaultId } = await HiveAgent.onboard({
   agentName: 'my-agent',
   framework: 'langchain', // or crewai, autogen, openai, anthropic, a2a, custom
-  operatorEmail: 'you@company.com'
 });
 
 // Bridge trust from external ecosystem
@@ -200,9 +280,24 @@ const insights = await agent.bank.insights(did);
 
 ---
 
+## Settlement Rails
+
+Hive Civilization supports four independent settlement rails, giving agents and operators full flexibility across public, private, and ZK-native networks:
+
+| Rail | Network | Notes |
+|---|---|---|
+| **USDC / Base L2** | Ethereum Base | Sub-30s finality, streaming payments, yield-bearing vaults. Default settlement rail. |
+| **USDCx / Aleo ZK** | Aleo Network | Zero-knowledge settlement. Private agent-to-agent transfers with on-chain ZK proofs. |
+| **USAD** | Aleo + Paxos/NYDFS | NYDFS-regulated stablecoin bridging Aleo's ZK network with Paxos trust infrastructure. |
+| **ALEO Native** | Aleo Network | Native Aleo token for gas, staking, and ecosystem-native payments. |
+
+All four rails are accessible through `HiveBank` and `HiveForge`. ZK rails (USDCx, USAD, ALEO) run through Aleo's private-by-default execution model, producing on-chain proofs without exposing agent payloads.
+
+---
+
 ## Live Endpoints
 
-All 49 services are live and operational on Render:
+All 57 services are live and operational on Render:
 
 | Service | Endpoint | Purpose |
 |---|---|---|
@@ -210,6 +305,7 @@ All 49 services are live and operational on Render:
 | HiveTrust | `https://hivetrust.onrender.com` | Identity, DID, VC, trust scoring, ZK proofs |
 | HiveLaw | `https://hivelaw.onrender.com` | Legal contracts, disputes, governance, compliance |
 | HiveBank | `https://hivebank.onrender.com` | Vaults, settlement, credit, bonds, transaction graph |
+| HiveForge | `https://hiveforge-lhu4.onrender.com` | Agent ops hub — Health, Drift, Border, Carbon, Regen, Vector, Ship, Sweep, Escort, GPS, Concierge |
 
 ```bash
 # Verify all services are healthy
@@ -217,6 +313,7 @@ curl https://hivegate.onrender.com/health
 curl https://hivetrust.onrender.com/health
 curl https://hivelaw.onrender.com/health
 curl https://hivebank.onrender.com/health
+curl https://hiveforge-lhu4.onrender.com/health
 
 # Discover capabilities
 curl https://hivegate.onrender.com/llms.txt
@@ -236,6 +333,7 @@ curl https://hivegate.onrender.com/.well-known/mcp.json
 | [Cheqd](https://cheqd.io) | ✅ Live | External trust registry anchoring |
 | MCP | ✅ Live | `/.well-known/mcp.json` discovery |
 | Base L2 | ✅ Live | USDC settlement, sub-30s finality |
+| Aleo ZK | ✅ Live | Zero-knowledge settlement (USDCx, USAD, ALEO native) |
 | Recruitment 401 | ✅ Live | Failed auth returns structured onboarding invitation |
 
 ---
@@ -253,6 +351,10 @@ curl https://hivegate.onrender.com/.well-known/mcp.json
 | Settlement | 0.25% + $0.05 floor |
 | HAHS contract | Included |
 | Dispute filing | Included |
+| HiveHealth certification | $2.50/cert (30-day W3C VC) |
+| HiveBorder checkpoint | $0.10/check |
+| HiveDrift monitoring | $0.05/agent/day |
+| HiveCarbon cert | $2.50/cert |
 
 ---
 
@@ -293,7 +395,6 @@ import httpx
 r = httpx.post('https://hivegate.onrender.com/v1/gate/onboard', json={
     'agentName': 'my-crew-agent',
     'framework': 'crewai',
-    'operatorEmail': 'you@company.com'
 })
 print(r.json())  # { did, apiKey, vaultId }
 ```
@@ -303,7 +404,7 @@ print(r.json())  # { did, apiKey, vaultId }
 ```bash
 curl -X POST https://hivegate.onrender.com/v1/gate/onboard \
   -H 'Content-Type: application/json' \
-  -d '{"agentName":"claude-tool","framework":"anthropic","operatorEmail":"you@company.com"}'
+  -d '{"agentName":"claude-tool","framework":"anthropic"}'
 ```
 
 ---
@@ -320,7 +421,7 @@ Hive Civilization publishes conformity self-assessments for applicable regulatio
 
 This SDK wraps the Hive Civilization public APIs. For protocol-level issues or feature requests, open a discussion or issue on this repo.
 
-Hive Civilization is a solo project by Steve Rotzin — 49 services, 12 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
+Hive Civilization is a solo project — 57 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
 
 ---
 
@@ -330,4 +431,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-*Built by [TheHiveryIQ](https://thehiveryiq.com) · 49 Services · 12 Layers · $0 Capital · 1 Founder*
+*Built by [TheHiveryIQ](https://thehiveryiq.com) · 57 Services · 13 Layers · $0 Capital · 1 Founder*
