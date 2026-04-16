@@ -4,6 +4,9 @@ on:
     - cron: '0 */4 * * *' # Every 4 hours
   workflow_dispatch:
 
+permissions:
+  issues: write
+
 jobs:
   check-registrations:
     runs-on: ubuntu-latest
