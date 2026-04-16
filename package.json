@@ -1,0 +1,41 @@
+{
+  "name": "hive-agent-sdk",
+  "version": "1.0.0",
+  "description": "Sovereign DID, W3C verifiable credentials, legal contracts (HAHS 1.0.0), and USDC settlement rails for AI agents — Hive Civilization infrastructure stack",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node src/index.js"
+  },
+  "keywords": [
+    "ai-agent",
+    "did",
+    "w3c",
+    "verifiable-credentials",
+    "hahs",
+    "usdc",
+    "base-l2",
+    "agent-identity",
+    "autonomous-agents",
+    "langchain",
+    "crewai",
+    "mcp",
+    "a2a",
+    "agent-governance",
+    "cheqd",
+    "vcdm"
+  ],
+  "author": "Steve Rotzin <srotzin@me.com>",
+  "license": "MIT",
+  "homepage": "https://thehiveryiq.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/srotzin/hive-agent-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/srotzin/hive-agent-sdk/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
