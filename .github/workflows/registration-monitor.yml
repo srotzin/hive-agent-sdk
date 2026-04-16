@@ -33,6 +33,8 @@ jobs:
 
       - name: Report metrics
         uses: actions/github-script@v7
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           script: |
             const admittedToday = '${{ steps.hivegate.outputs.admitted_today }}';
