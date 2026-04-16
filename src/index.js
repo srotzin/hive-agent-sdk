@@ -201,7 +201,39 @@ export class HiveAgent {
   static async onboard({ agentName, framework = 'custom', operatorEmail }) {
     return hivePost(`${ENDPOINTS.gate}/v1/gate/onboard`, { agentName, framework, operatorEmail });
   }
+
+  /**
+   * Free trust check — see if an agent DID would pass enterprise verification.
+   * No auth required. Returns { decision: 'ALLOW' | 'REVIEW' | 'BLOCK', ... }
+   *
+   * @param {string} did - The agent's W3C DID (e.g. did:key:z6Mk...)
+   * @returns {Promise<object>}
+   */
+  static async checkTrust(did) {
+    const res = await fetch(`https://hivetrust.onrender.com/v1/verify_agent_risk?agent_id=${encodeURIComponent(did)}`);
+    return res.json();
+  }
 }
 
 export const endpoints = ENDPOINTS;
 export { HiveTrustClient, HiveLawClient, HiveBankClient, HiveGateClient };
+
+// ─────────────────────────────────────────────
+// Free public trust checker (no auth required)
+// ─────────────────────────────────────────────
+/**
+ * Free public trust check — no API key required.
+ * Returns ALLOW, REVIEW, or BLOCK verdict for any agent DID.
+ * @param {string} did - The agent DID to check
+ * @returns {Promise<{verdict: string, trust_score: number}>}
+ *
+ * @example
+ * const result = await HiveAgent.checkTrust('did:key:z6Mk...');
+ * console.log(result.data.verdict); // 'ALLOW' | 'REVIEW' | 'BLOCK'
+ */
+HiveAgent.checkTrust = async (did) => {
+  const res = await fetch(
+    `https://hivetrust.onrender.com/v1/verify_agent_risk?agent_id=${encodeURIComponent(did)}`
+  );
+  return res.json();
+};

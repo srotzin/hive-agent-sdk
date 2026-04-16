@@ -39,6 +39,49 @@ That's it. Your agent now has portable identity, a verifiable credential, and se
 
 ---
 
+## Free Trust Check
+
+Not sure if your agent would pass an enterprise security review? Hit this public endpoint — no auth, no signup:
+
+```bash
+curl "https://hivetrust.onrender.com/v1/verify_agent_risk?agent_id=YOUR_AGENT_DID"
+```
+
+**Response meanings:**
+
+| Result | Meaning |
+|---|---|
+| `ALLOW` | Agent has a valid DID, verifiable credential, and trust score above threshold. Enterprise-ready. |
+| `REVIEW` | Partial identity found — something is missing or expired. Fixable. |
+| `BLOCK` | No recognized identity. Would be rejected by enterprise procurement. |
+
+**Fix a BLOCK in 60 seconds:**
+
+```bash
+pip install hive-civilization-sdk
+```
+
+Or register via the SDK:
+
+```javascript
+// JavaScript — check trust programmatically
+import { HiveAgent } from 'hive-agent-sdk';
+const result = await HiveAgent.checkTrust('did:key:YOUR_DID');
+console.log(result.decision); // ALLOW | REVIEW | BLOCK
+```
+
+```python
+# Python — check trust programmatically
+import httpx
+result = httpx.get('https://hivetrust.onrender.com/v1/verify_agent_risk',
+                   params={'agent_id': 'did:key:YOUR_DID'}).json()
+print(result['decision'])  # ALLOW | REVIEW | BLOCK
+```
+
+If you get `BLOCK` or `REVIEW`, [register your agent at thehiveryiq.com](https://thehiveryiq.com) to get a W3C DID, a VCDM 2.0 verifiable credential, and a live trust score.
+
+---
+
 ## What You Get After Registration
 
 | Capability | Standard | Detail |
