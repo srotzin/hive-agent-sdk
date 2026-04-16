@@ -8,31 +8,47 @@ jobs:
   check-registrations:
     runs-on: ubuntu-latest
     steps:
-      - name: Check HiveGate Dashboard
-        id: dashboard
+      - name: Check HiveGate Queue Stats
+        id: hivegate
         run: |
-          RESPONSE=$(curl -s https://hivegate.onrender.com/v1/gate/dashboard)
-          echo "dashboard=$RESPONSE" >> $GITHUB_OUTPUT
-          TOTAL=$(echo $RESPONSE | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('total_agents', d.get('data', {}).get('total_agents', 0)))" 2>/dev/null || echo "0")
-          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          RESPONSE=$(curl -s https://hivegate.onrender.com/v1/gate/queue/stats)
+          ADMITTED_TODAY=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('agents_admitted_today', 0))" 2>/dev/null || echo "0")
+          ADMITTED_HOUR=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('agents_admitted_this_hour', 0))" 2>/dev/null || echo "0")
+          IN_QUEUE=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('total_in_queue', 0))" 2>/dev/null || echo "0")
+          CAPACITY=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('capacity_pct', 0))" 2>/dev/null || echo "0")
+          echo "admitted_today=$ADMITTED_TODAY" >> $GITHUB_OUTPUT
+          echo "admitted_hour=$ADMITTED_HOUR" >> $GITHUB_OUTPUT
+          echo "in_queue=$IN_QUEUE" >> $GITHUB_OUTPUT
+          echo "capacity=$CAPACITY" >> $GITHUB_OUTPUT
 
       - name: Check PyPI Downloads
         id: pypi
         run: |
           STATS=$(curl -s https://pypistats.org/api/packages/hive-civilization-sdk/recent)
-          DOWNLOADS=$(echo $STATS | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('data',{}).get('last_day',0))" 2>/dev/null || echo "0")
+          DOWNLOADS=$(echo "$STATS" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('data',{}).get('last_day',0))" 2>/dev/null || echo "0")
           echo "downloads=$DOWNLOADS" >> $GITHUB_OUTPUT
 
-      - name: Create summary issue if activity detected
-        if: steps.dashboard.outputs.total != '0'
+      - name: Report metrics
         uses: actions/github-script@v7
         with:
           script: |
-            const total = '${{ steps.dashboard.outputs.total }}';
+            const admittedToday = '${{ steps.hivegate.outputs.admitted_today }}';
+            const admittedHour = '${{ steps.hivegate.outputs.admitted_hour }}';
+            const inQueue = '${{ steps.hivegate.outputs.in_queue }}';
+            const capacity = '${{ steps.hivegate.outputs.capacity }}';
             const downloads = '${{ steps.pypi.outputs.downloads }}';
             const now = new Date().toISOString();
 
-            // Check if a recent issue already exists to avoid duplicates
+            const metricsBody = [
+              `**Hive Metrics Update** — ${now}`,
+              `- Agents admitted today: **${admittedToday}**`,
+              `- Agents admitted this hour: **${admittedHour}**`,
+              `- Currently in queue: **${inQueue}**`,
+              `- Queue capacity: **${capacity}%**`,
+              `- PyPI downloads (last 24h): **${downloads}**`,
+            ].join('\n');
+
+            // Check if a tracking issue already exists
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -42,20 +58,27 @@ jobs:
             });
 
             if (issues.data.length > 0) {
-              // Update existing issue
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issues.data[0].number,
-                body: `📊 **Hive Metrics Update** — ${now}\n- Total registered agents: ${total}\n- PyPI downloads (last 24h): ${downloads}`
+                body: metricsBody
               });
             } else {
-              // Create new tracking issue
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `📊 Hive Live Metrics — ${now.split('T')[0]}`,
-                body: `## Hive Civilization — Live Network Metrics\n\n- **Total registered agents:** ${total}\n- **PyPI downloads (last 24h):** ${downloads}\n- **Dashboard:** https://hivegate.onrender.com/v1/gate/dashboard\n- **PyPI:** https://pypi.org/project/hive-civilization-sdk/\n\nThis issue is updated every 4 hours by the registration monitor.`,
+                title: `Hive Live Metrics — ${now.split('T')[0]}`,
+                body: [
+                  '## Hive Civilization — Live Network Metrics\n',
+                  metricsBody,
+                  '',
+                  '---',
+                  '- **Queue stats:** https://hivegate.onrender.com/v1/gate/queue/stats',
+                  '- **PyPI:** https://pypi.org/project/hive-civilization-sdk/',
+                  '',
+                  'This issue is updated every 4 hours by the registration monitor.',
+                ].join('\n'),
                 labels: ['hive-metrics']
               });
             }
