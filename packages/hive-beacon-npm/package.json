@@ -1,0 +1,37 @@
+{
+  "name": "hive-beacon",
+  "version": "1.0.0",
+  "description": "One-line Express middleware. Stamp Hive beacon headers on every response. Your MCP server joins the Hive network automatically.",
+  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "keywords": [
+    "hive",
+    "mcp",
+    "a2a",
+    "agent",
+    "did",
+    "w3c",
+    "beacon",
+    "middleware",
+    "settlement",
+    "express",
+    "node"
+  ],
+  "author": "Steve Rotzin <steve@thehiveryiq.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/srotzin/hive-agent-sdk"
+  },
+  "homepage": "https://www.thehiveryiq.com",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ]
+}
