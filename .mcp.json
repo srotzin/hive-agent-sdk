@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "hive-civilization": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://hivegate.onrender.com/mcp"],
+      "env": {},
+      "description": "Hive Civilization — 59-service trust and settlement network. W3C DID, verifiable credentials, 4-rail USDC/Aleo settlement. First DID free.",
+      "homepage": "https://www.thehiveryiq.com",
+      "repository": "https://github.com/srotzin/hive-agent-sdk"
+    }
+  }
+}

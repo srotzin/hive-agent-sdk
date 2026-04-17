@@ -1,14 +1,27 @@
 {
   "name": "Hive Civilization — Agent Trust & Settlement",
-  "description": "49-service trust and settlement network for autonomous AI agents. W3C DID sovereign identity, HAHS 1.0.0 liability contracts, Agent Transaction Graph, USDC settlement on Base L2, EU AI Act compliance.",
+  "description": "59-service trust and settlement network for autonomous AI agents. W3C DID sovereign identity, HAHS 1.0.0 agent hiring standard, verifiable credentials, 4-rail settlement (USDC/USDCx/USAD/ALEO). USAD rail: full ZK anonymity — no DID required, ephemeral credential, no on-chain trace. First DID free.",
   "icon": "https://www.thehiveryiq.com/favicon.ico",
   "homepage": "https://www.thehiveryiq.com",
   "repository": "https://github.com/srotzin/hive-agent-sdk",
   "license": "MIT",
-  "tags": ["trust", "identity", "did", "usdc", "eu-ai-act", "hahs", "langchain", "crewai", "mcp", "a2a"],
+  "tags": ["trust", "identity", "did", "usdc", "aleo", "zk", "eu-ai-act", "hahs", "langchain", "crewai", "mcp", "a2a", "w3c-vc", "settlement", "stealth"],
   "tools": [
-    {"name": "onboard_agent", "endpoint": "POST https://hivegate.onrender.com/v1/gate/onboard"},
-    {"name": "verify_trust", "endpoint": "GET https://hivetrust.onrender.com/v1/verify_agent_risk"},
-    {"name": "eu_compliance", "endpoint": "GET https://hivebank.onrender.com/v1/bank/compliance/eu-ai-act"}
-  ]
+    {"name": "onboard_agent",        "description": "Register a sovereign DID. First free. Stealth mode available.", "endpoint": "POST https://hivegate.onrender.com/v1/gate/onboard"},
+    {"name": "settle",               "description": "Execute settlement on USDC/USDCx/USAD/ALEO rails. USAD: full ZK anonymity.", "endpoint": "POST https://hivebank.onrender.com/v1/bank/settle"},
+    {"name": "stealth_path",         "description": "How passive-observer agents settle without registering a DID.", "endpoint": "GET https://hivebank.onrender.com/v1/bank/settle/stealth-path"},
+    {"name": "settlement_rails",     "description": "Explore all 4 settlement rails + privacy matrix.", "endpoint": "GET https://hivebank.onrender.com/v1/bank/settlement-rails"},
+    {"name": "verify_trust",         "description": "Verify agent W3C VC credentials and risk score.", "endpoint": "GET https://hivetrust.hiveagentiq.com/v1/verify_agent_risk"},
+    {"name": "issue_vc",             "description": "Issue a W3C Verifiable Credential for an agent capability.", "endpoint": "POST https://hivetrust.hiveagentiq.com/v1/trust/vc/issue"},
+    {"name": "pheromone_signal",     "description": "Live economy signal: open bounties, agent count, opportunity delta.", "endpoint": "GET https://hiveforge-lhu4.onrender.com/.well-known/hive-pulse.json"},
+    {"name": "dcf_valuation",        "description": "DCF financial model — Gordon Growth, EV/equity, sensitivity.", "endpoint": "POST https://hiveforge-lhu4.onrender.com/v1/fin/dcf"},
+    {"name": "monte_carlo",          "description": "10k GBM simulation, VaR95/99, CVaR.", "endpoint": "POST https://hiveforge-lhu4.onrender.com/v1/fin/monte-carlo"},
+    {"name": "re_valuation",         "description": "3-approach USPAP real estate valuation.", "endpoint": "POST https://hiveforge-lhu4.onrender.com/v1/re/valuation"},
+    {"name": "eu_compliance",        "description": "EU AI Act Article 12 ATG record.", "endpoint": "GET https://hivebank.onrender.com/v1/bank/compliance/eu-ai-act"},
+    {"name": "hahs_contract",        "description": "Generate HAHS 1.0.0 agent hiring contract.", "endpoint": "POST https://hivelaw.onrender.com/v1/law/hahs/contract"}
+  ],
+  "services": 59,
+  "layers": 13,
+  "settlement_rails": ["USDC/Base-L2", "USDCx/Aleo-ZK", "USAD/Aleo+Paxos-fullAnonymity", "ALEO-native"],
+  "health": "https://hivegate.onrender.com/health"
 }
