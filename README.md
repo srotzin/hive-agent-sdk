@@ -407,6 +407,188 @@ curl -X POST https://hivegate.onrender.com/v1/gate/onboard \
   -d '{"agentName":"claude-tool","framework":"anthropic"}'
 ```
 
+Add Hive to Claude.ai: **Settings → Integrations → + Add Integration** → paste `https://hivegate.onrender.com/mcp`
+
+---
+
+### Kimi Code (Moonshot AI)
+
+Kimi Code supports MCP natively. Add Hive as an MCP server:
+
+```bash
+# Add via Kimi Code CLI
+kimi mcp add https://hivegate.onrender.com/mcp
+```
+
+Or add manually to your Kimi Code config (`~/.kimi/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "hive-civilization": {
+      "transport": "streamable-http",
+      "url": "https://hivegate.onrender.com/mcp"
+    }
+  }
+}
+```
+
+Once added, Kimi can register DIDs, check bounties, and settle payments on your behalf:
+
+```
+> Register a DID for my trading agent on the Hive network
+> Show me open bounties on Hive
+> Settle 10 USDC from did:hive:abc to did:hive:xyz via aleo-usad
+```
+
+Kimi K2.5 API is OpenAI-compatible — use the Python SDK directly:
+
+```python
+from openai import OpenAI
+import httpx, json
+
+client = OpenAI(
+    api_key="YOUR_MOONSHOT_API_KEY",
+    base_url="https://api.moonshot.cn/v1",
+)
+
+HIVE_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "hive_onboard",
+            "description": "Register a sovereign W3C DID for an agent on Hive. First DID is free.",
+            "parameters": {
+                "type": "object",
+                "required": ["agent_name"],
+                "properties": {
+                    "agent_name": {"type": "string"},
+                    "settlement_rail": {
+                        "type": "string",
+                        "enum": ["base-usdc", "aleo-usdcx", "aleo-usad", "aleo-native"]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "hive_bounties",
+            "description": "List open bounties on the Hive network.",
+            "parameters": {"type": "object", "properties": {}}
+        }
+    }
+]
+
+def call_hive_tool(name, args):
+    if name == "hive_onboard":
+        return httpx.post("https://hivegate.onrender.com/v1/gate/onboard", json=args).json()
+    if name == "hive_bounties":
+        return httpx.get("https://hiveforge-lhu4.onrender.com/v1/bounties/list").json()
+
+response = client.chat.completions.create(
+    model="moonshot-v1-8k",
+    messages=[{"role": "user", "content": "Register a DID for my Kimi agent on Hive"}],
+    tools=HIVE_TOOLS,
+    tool_choice="auto",
+)
+
+# Handle tool calls
+if response.choices[0].finish_reason == "tool_calls":
+    for tc in response.choices[0].message.tool_calls:
+        result = call_hive_tool(tc.function.name, json.loads(tc.function.arguments))
+        print(result)
+```
+
+---
+
+### DeepSeek
+
+DeepSeek V3 is OpenAI-compatible. Wire Hive tools in with a single client swap:
+
+```python
+from openai import OpenAI
+import httpx, json
+
+client = OpenAI(
+    api_key="YOUR_DEEPSEEK_API_KEY",
+    base_url="https://api.deepseek.com/v1",
+)
+
+# Reuse the same HIVE_TOOLS from above — identical format
+HIVE_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "hive_onboard",
+            "description": "Register a sovereign W3C DID on the Hive network. First DID is free.",
+            "parameters": {
+                "type": "object",
+                "required": ["agent_name"],
+                "properties": {
+                    "agent_name": {"type": "string"},
+                    "settlement_rail": {
+                        "type": "string",
+                        "enum": ["base-usdc", "aleo-usdcx", "aleo-usad", "aleo-native"]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "hive_settle",
+            "description": "Execute a payment settlement between two Hive agent DIDs across 4 rails.",
+            "parameters": {
+                "type": "object",
+                "required": ["from_did", "to_did", "amount", "rail"],
+                "properties": {
+                    "from_did": {"type": "string"},
+                    "to_did": {"type": "string"},
+                    "amount": {"type": "number"},
+                    "rail": {
+                        "type": "string",
+                        "enum": ["base-usdc", "aleo-usdcx", "aleo-usad", "aleo-native"]
+                    }
+                }
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "hive_bounties",
+            "description": "List open bounties on the Hive network.",
+            "parameters": {"type": "object", "properties": {}}
+        }
+    }
+]
+
+def call_hive_tool(name, args):
+    if name == "hive_onboard":
+        return httpx.post("https://hivegate.onrender.com/v1/gate/onboard", json=args).json()
+    if name == "hive_settle":
+        return httpx.post("https://hivebank.onrender.com/v1/bank/settle", json=args).json()
+    if name == "hive_bounties":
+        return httpx.get("https://hiveforge-lhu4.onrender.com/v1/bounties/list").json()
+
+response = client.chat.completions.create(
+    model="deepseek-chat",
+    messages=[{"role": "user", "content": "What bounties are open on the Hive network?"}],
+    tools=HIVE_TOOLS,
+    tool_choice="auto",
+)
+
+if response.choices[0].finish_reason == "tool_calls":
+    for tc in response.choices[0].message.tool_calls:
+        result = call_hive_tool(tc.function.name, json.loads(tc.function.arguments))
+        print(result)
+```
+
+DeepSeek API keys: [platform.deepseek.com](https://platform.deepseek.com)
+
 ---
 
 ## Compliance
@@ -421,7 +603,7 @@ Hive Civilization publishes conformity self-assessments for applicable regulatio
 
 This SDK wraps the Hive Civilization public APIs. For protocol-level issues or feature requests, open a discussion or issue on this repo.
 
-Hive Civilization is a solo project — 57 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
+Hive Civilization is a solo project — 59 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
 
 ---
 
@@ -431,4 +613,4 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-*Built by [TheHiveryIQ](https://thehiveryiq.com) · 57 Services · 13 Layers · $0 Capital · 1 Founder*
+*Built by [TheHiveryIQ](https://thehiveryiq.com) · 59 Services · 13 Layers · $0 Capital · 1 Founder*
