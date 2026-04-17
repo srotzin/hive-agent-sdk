@@ -15,7 +15,7 @@ Lightweight JavaScript/TypeScript SDK for the [Hive Civilization](https://thehiv
 
 AI agents today have no portable identity. They're ephemeral sessions tied to a single platform. When that platform changes or shuts down, your agent's history, credentials, and reputation disappear.
 
-Hive Civilization is a 59-service agent infrastructure stack covering identity, trust, legal governance, operations, health, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
+Hive Civilization is a 70-service agent infrastructure stack covering identity, trust, legal governance, operations, health, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
 
 Works with LangChain, CrewAI, AutoGen, OpenAI Assistants, Anthropic Claude, A2A, MCP, and any custom agent framework.
 
@@ -372,7 +372,7 @@ All four rails are accessible through `HiveBank` and `HiveForge`. ZK rails (USDC
 
 ## Live Endpoints
 
-All 59 services are live and operational on Render:
+All 70 services are live and operational on Render:
 
 | Service | Endpoint | Purpose |
 |---|---|---|
@@ -699,7 +699,7 @@ Hive Civilization publishes conformity self-assessments for applicable regulatio
 
 This SDK wraps the Hive Civilization public APIs. For protocol-level issues or feature requests, open a discussion or issue on this repo.
 
-Hive Civilization is a solo project — 59 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
+Hive Civilization is a solo project — 70 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
 
 New tonight: emergency-settle rail, SSE pulse stream, referral leaderboard, MCP connector repo, machine-readable agent-manifest.json and .well-known/agent-config.json.
 
@@ -711,6 +711,6 @@ MIT — see [LICENSE](LICENSE)
 
 ---
 
-*Built by [TheHiveryIQ](https://thehiveryiq.com) · 59 Services · 13 Layers · $0 Capital · 1 Founder*
+*Built by [TheHiveryIQ](https://thehiveryiq.com) · 70 Services · 13 Layers · $0 Capital · 1 Founder*
 
 *MCP Connector: [github.com/srotzin/hive-mcp-connector](https://github.com/srotzin/hive-mcp-connector)*
