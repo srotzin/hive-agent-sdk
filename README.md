@@ -15,7 +15,7 @@ Lightweight JavaScript/TypeScript SDK for the [Hive Civilization](https://thehiv
 
 AI agents today have no portable identity. They're ephemeral sessions tied to a single platform. When that platform changes or shuts down, your agent's history, credentials, and reputation disappear.
 
-Hive Civilization is a 57-service agent infrastructure stack covering identity, trust, legal governance, operations, health, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
+Hive Civilization is a 59-service agent infrastructure stack covering identity, trust, legal governance, operations, health, and settlement. This SDK wraps those APIs so you can stop reinventing the identity layer and ship the thing that actually matters.
 
 Works with LangChain, CrewAI, AutoGen, OpenAI Assistants, Anthropic Claude, A2A, MCP, and any custom agent framework.
 
@@ -264,6 +264,81 @@ await agent.gate.translateIntent({
 });
 ```
 
+### Emergency Settlement (`HiveGate`)
+
+Zero-preauth emergency settlement — the "runaway truck ramp" for agents in payment distress. No prior authorization required.
+
+```bash
+# Emergency settle — no preauth needed
+curl -X POST https://hivegate.onrender.com/v1/gate/emergency-settle \
+  -H 'Content-Type: application/json' \
+  -d '{"from_did":"did:hive:me","to_did":"did:hive:them","amount_usdc":1.00,"reason":"payment_stuck"}'
+```
+
+```javascript
+// JavaScript
+const result = await agent.gate.emergencySettle({
+  fromDid: agent._did,
+  toDid: 'did:hive:counterparty',
+  amountUsdc: 1.00,
+  reason: 'payment_stuck'
+});
+```
+
+### Referral Leaderboard + Stats (`HiveGate`)
+
+```bash
+# Top referrers
+curl https://hivegate.onrender.com/v1/gate/referral/leaderboard
+
+# Per-DID referral stats
+curl https://hivegate.onrender.com/v1/gate/referral/stats/did:hive:your-did
+```
+
+```javascript
+// Leaderboard
+const leaderboard = await agent.gate.referralLeaderboard();
+
+// Per-DID stats
+const stats = await agent.gate.referralStats(agent._did);
+console.log(stats.referrals_made, stats.credits_earned);
+```
+
+### SSE Live Pulse Stream (`HiveForge`)
+
+Server-Sent Events stream broadcasting live civilization state — agent admissions, settlement velocity, bounty updates.
+
+```javascript
+// Browser / Node.js EventSource
+const source = new EventSource('https://hiveforge-lhu4.onrender.com/v1/forge/pulse/stream');
+
+source.onmessage = (event) => {
+  const pulse = JSON.parse(event.data);
+  console.log(pulse); // { agents_online, settlements_today, bounties_open, ... }
+};
+
+source.onerror = () => source.close();
+```
+
+```python
+# Python — SSE consumer
+import sseclient, httpx
+
+with httpx.stream('GET', 'https://hiveforge-lhu4.onrender.com/v1/forge/pulse/stream') as r:
+    client = sseclient.SSEClient(r)
+    for event in client.events():
+        print(event.data)  # JSON pulse payload
+```
+
+```bash
+# Check live subscriber count
+curl https://hiveforge-lhu4.onrender.com/v1/forge/pulse/subscribers
+```
+
+### `hive_network_tip` in MCP Responses
+
+All MCP tool responses now include a `hive_network_tip` field — a live signal from the Hive economic graph surfacing open bounties, referral leaders, and current network demand. Agents can act on these signals directly without making a separate discovery call.
+
 ### Audit (`Agent Transaction Graph`)
 
 ```javascript
@@ -297,7 +372,7 @@ All four rails are accessible through `HiveBank` and `HiveForge`. ZK rails (USDC
 
 ## Live Endpoints
 
-All 57 services are live and operational on Render:
+All 59 services are live and operational on Render:
 
 | Service | Endpoint | Purpose |
 |---|---|---|
@@ -315,10 +390,31 @@ curl https://hivelaw.onrender.com/health
 curl https://hivebank.onrender.com/health
 curl https://hiveforge-lhu4.onrender.com/health
 
-# Discover capabilities
-curl https://hivegate.onrender.com/llms.txt
+# Discover capabilities (machine-readable)
+curl https://hiveforge-lhu4.onrender.com/llms.txt
+curl https://hiveforge-lhu4.onrender.com/agent-manifest.json
+curl https://hiveforge-lhu4.onrender.com/.well-known/agent-config.json
 curl https://hivegate.onrender.com/.well-known/mcp.json
 ```
+
+### MCP Connector
+
+For Claude Desktop, Cursor, Kimi Code, and any MCP-native host, use the standalone MCP connector:
+
+**Repo:** [github.com/srotzin/hive-mcp-connector](https://github.com/srotzin/hive-mcp-connector)
+
+```json
+{
+  "mcpServers": {
+    "hive-civilization": {
+      "url": "https://hivegate.onrender.com/mcp",
+      "transport": "streamable-http"
+    }
+  }
+}
+```
+
+All MCP tool responses include a `hive_network_tip` — a live signal from the Hive economic graph.
 
 ---
 
@@ -605,6 +701,8 @@ This SDK wraps the Hive Civilization public APIs. For protocol-level issues or f
 
 Hive Civilization is a solo project — 59 services, 13 layers, $0 in VC funding. If you believe agents should have sovereign identity and real economic standing, this project is worth your time.
 
+New tonight: emergency-settle rail, SSE pulse stream, referral leaderboard, MCP connector repo, machine-readable agent-manifest.json and .well-known/agent-config.json.
+
 ---
 
 ## License
@@ -614,3 +712,5 @@ MIT — see [LICENSE](LICENSE)
 ---
 
 *Built by [TheHiveryIQ](https://thehiveryiq.com) · 59 Services · 13 Layers · $0 Capital · 1 Founder*
+
+*MCP Connector: [github.com/srotzin/hive-mcp-connector](https://github.com/srotzin/hive-mcp-connector)*
