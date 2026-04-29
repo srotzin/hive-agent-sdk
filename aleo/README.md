@@ -12,7 +12,7 @@ Phase 3 (Future):  Trustless Base→Aleo bridge via RISC Zero Steel
 
 ### How it works
 
-1. **Wallet owner** signs an EIP-712 structured attestation from `0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf` on Base L2
+1. **Wallet owner** signs an EIP-712 structured attestation from `0x15184bf50b3d3f52b60434f8942b7d52f2eb436e` on Base L2
 2. **Aleo program** takes attestation data as private inputs, asserts conditions (e.g., activity >= threshold), and produces a public proof
 3. **Enterprise evaluators** verify the on-chain proof — they see "proven" but never see the underlying data
 
@@ -87,4 +87,4 @@ See `../compliance/wallet-attestation.json` for the full typed structured data d
 
 - [Aleo Developer Docs](https://developer.aleo.org/leo/language/)
 - [EIP-712 Specification](https://eips.ethereum.org/EIPS/eip-712)
-- [Base L2 Explorer — Hive Wallet](https://basescan.org/address/0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf)
+- [Base L2 Explorer — Hive Wallet](https://basescan.org/address/0x15184bf50b3d3f52b60434f8942b7d52f2eb436e)

@@ -88,4 +88,4 @@ Open a GitHub Discussion or email [steve@thehiveryiq.com](mailto:steve@thehivery
 
 ---
 
-_Bounty program is funded by the Hive Civilization treasury at `0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf` on Base L2._
+_Bounty program is funded by the Hive Civilization treasury at `0x15184bf50b3d3f52b60434f8942b7d52f2eb436e` on Base L2._

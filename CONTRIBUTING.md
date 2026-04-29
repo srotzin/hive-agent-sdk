@@ -41,7 +41,7 @@ const { score } = await hive.trust.getScore(did);
 
 // Execute a payment
 await hive.bank.pay({
-  recipient: '0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf',
+  recipient: '0x15184bf50b3d3f52b60434f8942b7d52f2eb436e',
   amountUsdc: '0.01',
   memo: 'hive-service-access',
 });

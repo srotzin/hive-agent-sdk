@@ -14,10 +14,10 @@
 'use strict';
 
 const WALLET_INFO = {
-  address:  '0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf',
+  address:  '0x15184bf50b3d3f52b60434f8942b7d52f2eb436e',
   network:  'base',
   asset:    'USDC',
-  explorer: 'https://basescan.org/address/0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf',
+  explorer: 'https://basescan.org/address/0x15184bf50b3d3f52b60434f8942b7d52f2eb436e',
   hive_services: [
     'HiveGate',
     'HiveTrust',

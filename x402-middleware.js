@@ -8,7 +8,7 @@
 
 'use strict';
 
-const HIVE_RECIPIENT = '0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf';
+const HIVE_RECIPIENT = '0x15184bf50b3d3f52b60434f8942b7d52f2eb436e';
 const HIVE_NETWORK   = 'base';
 const HIVE_ASSET     = 'USDC';
 const HIVE_MEMO      = 'hive-service-access';

@@ -25,7 +25,7 @@ One SDK. No VC. Live in production. 49 services. 12 governance layers."
 ---
 
 ## Wallet Addresses
-- **Base L2 (USDC):** `0x78B3B3C356E89b5a69C488c6032509Ef4260B6bf`
+- **Base L2 (USDC):** `0x15184bf50b3d3f52b60434f8942b7d52f2eb436e`
 - **Aleo shield (USDCx + USAD + ALEO):** `aleo1cyk7r2jmd7lfcftzyy85z4j5x6rlern598qecx8v2ms738xcvgyq72q6tk`
 
 ---
