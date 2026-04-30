@@ -714,3 +714,16 @@ MIT — see [LICENSE](LICENSE)
 *Built by [TheHiveryIQ](https://thehiveryiq.com) · 70 Services · 13 Layers · $0 Capital · 1 Founder*
 
 *MCP Connector: [github.com/srotzin/hive-mcp-connector](https://github.com/srotzin/hive-mcp-connector)*
+
+
+---
+
+## Hive Civilization
+
+Hive Civilization is the cryptographic backbone of autonomous agent commerce — the layer that makes every agent transaction provable, every payment settable, and every decision defensible.
+
+This repository is part of the **PROVABLE · SETTABLE · DEFENSIBLE** pillar.
+
+- thehiveryiq.com
+- hiveagentiq.com
+- agent-card: https://hivetrust.onrender.com/.well-known/agent-card.json
